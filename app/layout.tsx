@@ -10,17 +10,19 @@ const jetbrains = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: "Signal Trader — Autonomous Execution Engine",
-  description: "Telegram signal → GPT-4o Mini → Bybit Futures automation platform",
+  description: "Telegram signal to Bybit Futures automation",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en" className={`${jetbrains.variable} dark`}>
-      <body className="bg-[#09090b] antialiased">{children}</body>
+    <html lang="en" className={jetbrains.variable}>
+      <body className="bg-[#09090b] text-zinc-100 antialiased">
+        {children}
+      </body>
     </html>
   );
 }
