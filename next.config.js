@@ -1,18 +1,3 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  reactStrictMode: true,
-  // Allow API calls to your GCP VM
-  async headers() {
-    return [
-      {
-        source: "/(.*)",
-        headers: [
-          { key: "X-Frame-Options", value: "DENY" },
-          { key: "X-Content-Type-Options", value: "nosniff" },
-        ],
-      },
-    ];
-  },
-};
-
+const nextConfig = {};
 module.exports = nextConfig;
