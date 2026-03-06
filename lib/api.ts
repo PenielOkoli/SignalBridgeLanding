@@ -1,17 +1,7 @@
-// lib/api.ts
-// Typed API client for the FastAPI bridge on the GCP VM
-
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "";
 const BEARER_TOKEN = process.env.NEXT_PUBLIC_API_BEARER_TOKEN || "";
 
-if (!API_URL) {
-  console.warn("[api] NEXT_PUBLIC_API_URL is not set");
-}
-
-async function apiFetch<T>(
-  path: string,
-  options: RequestInit = {}
-): Promise<T> {
+async function apiFetch<T>(path: string, options: RequestInit = {}): Promise<T> {
   const res = await fetch(`${API_URL}${path}`, {
     ...options,
     headers: {
@@ -20,16 +10,12 @@ async function apiFetch<T>(
       ...options.headers,
     },
   });
-
   if (!res.ok) {
     const text = await res.text();
     throw new Error(`API ${res.status}: ${text}`);
   }
-
   return res.json() as Promise<T>;
 }
-
-// ── Types ─────────────────────────────────────────────────────────────────────
 
 export interface LogsResponse {
   lines: string[];
@@ -62,29 +48,6 @@ export interface ConfigUpdatePayload {
   testnet?: boolean;
 }
 
-// ── API Methods ───────────────────────────────────────────────────────────────
-
-export const api = {
-  getLogs: () => apiFetch<LogsResponse>("/logs"),
-
-  getConfig: () => apiFetch<SafeConfig>("/config"),
-
-  updateConfig: (payload: ConfigUpdatePayload) =>
-    apiFetch<{ success: boolean; config: SafeConfig }>("/config", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    }),
-
-  getStatus: () => apiFetch<SystemStatus>("/status"),
-
-  getTelegramChannels: () => apiFetch<TelegramChannel[]>("/telegram/channels"),
-
-  healthCheck: () =>
-    fetch(`${API_URL}/health`)
-      .then((r) => r.json())
-      .catch(() => ({ status: "unreachable" })),
-};
-
 export interface TelegramChannel {
   id: number;
   name: string;
@@ -92,3 +55,19 @@ export interface TelegramChannel {
   username?: string;
   members?: number;
 }
+
+export const api = {
+  getLogs: () => apiFetch<LogsResponse>("/logs"),
+  getConfig: () => apiFetch<SafeConfig>("/config"),
+  updateConfig: (payload: ConfigUpdatePayload) =>
+    apiFetch<{ success: boolean; config: SafeConfig }>("/config", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  getStatus: () => apiFetch<SystemStatus>("/status"),
+  getTelegramChannels: () => apiFetch<TelegramChannel[]>("/telegram/channels"),
+  healthCheck: () =>
+    fetch(`${API_URL}/health`)
+      .then((r) => r.json())
+      .catch(() => ({ status: "unreachable" })),
+};
