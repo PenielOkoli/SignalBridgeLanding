@@ -77,8 +77,18 @@ export const api = {
 
   getStatus: () => apiFetch<SystemStatus>("/status"),
 
+  getTelegramChannels: () => apiFetch<TelegramChannel[]>("/telegram/channels"),
+
   healthCheck: () =>
     fetch(`${API_URL}/health`)
       .then((r) => r.json())
       .catch(() => ({ status: "unreachable" })),
 };
+
+export interface TelegramChannel {
+  id: number;
+  name: string;
+  type: "channel" | "supergroup" | "group";
+  username?: string;
+  members?: number;
+}
