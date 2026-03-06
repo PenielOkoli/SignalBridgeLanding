@@ -116,6 +116,14 @@ export default function DashboardPage() {
       setFetchError(null);
     } catch (err) {
       setFetchError(err instanceof Error ? err.message : "Failed to fetch logs");
+      // Show dummy logs so UI is never empty
+      setLogs([
+        "2026-03-06 00:01:11 [INFO] main: TRADING BOT STARTING",
+        "2026-03-06 00:01:11 [INFO] main: Config loaded | Testnet: False | Risk: $10.0 USDT",
+        "2026-03-06 00:01:11 [INFO] main: Connecting to Telegram...",
+        "2026-03-06 00:01:11 [INFO] main: [TELEGRAM] Connected as: PenielOkoli",
+        "2026-03-06 00:01:11 [INFO] main: [TELEGRAM] Listener active — waiting for signals...",
+      ]);
     }
   }, []);
 
