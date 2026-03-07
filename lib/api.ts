@@ -25,7 +25,7 @@ export interface LogsResponse {
 export interface SafeConfig {
   bybit_api_key: string;
   bybit_api_secret_set: boolean;
-  gemini_api_key?: string;
+  gemini_api_key_set: boolean;
   risk_usdt: number;
   leverage: number;
   telegram_channel_ids: number[];
