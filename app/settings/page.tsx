@@ -139,7 +139,6 @@ function ChannelSelector({ selectedIds, onChange }: {
 
   return (
     <div className="space-y-3">
-      {/* Selected chips */}
       {selectedIds.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {selectedIds.map(id => {
@@ -156,7 +155,6 @@ function ChannelSelector({ selectedIds, onChange }: {
         </div>
       )}
 
-      {/* Load button */}
       {!loaded ? (
         <button onClick={fetchChannels} disabled={loading}
           className="flex w-full items-center justify-center gap-2 rounded-lg border border-violet-500/30 bg-violet-500/10 py-3 font-mono text-xs text-violet-400 transition-colors hover:bg-violet-500/20 disabled:opacity-50">
@@ -165,7 +163,6 @@ function ChannelSelector({ selectedIds, onChange }: {
         </button>
       ) : (
         <div className="space-y-2">
-          {/* Search */}
           <div className="relative">
             <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-600" />
             <input
@@ -176,8 +173,6 @@ function ChannelSelector({ selectedIds, onChange }: {
               className="w-full rounded-lg border border-zinc-700/80 bg-zinc-900 py-2.5 pl-9 pr-4 font-mono text-xs text-zinc-300 placeholder-zinc-600 outline-none focus:border-violet-500/50"
             />
           </div>
-
-          {/* Channel list */}
           <div className="max-h-64 overflow-y-auto rounded-lg border border-zinc-800 bg-zinc-900/50 p-1"
             style={{ scrollbarWidth: "thin", scrollbarColor: "#27272a transparent" }}>
             {filtered.length === 0 ? (
@@ -188,32 +183,27 @@ function ChannelSelector({ selectedIds, onChange }: {
                 return (
                   <button key={ch.id} onClick={() => toggle(ch.id)}
                     className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors ${isSelected ? "bg-emerald-500/10 hover:bg-emerald-500/15" : "hover:bg-zinc-800/60"}`}>
-                    {/* Type badge */}
                     <span className={`shrink-0 rounded border px-1.5 py-0.5 font-mono text-[9px] font-bold tracking-widest ${typeColors[ch.type] || typeColors.group}`}>
                       {typeIcons[ch.type]}
                     </span>
-                    {/* Name */}
                     <div className="min-w-0 flex-1">
                       <div className="truncate font-mono text-xs text-zinc-200">{ch.name}</div>
                       {ch.username && (
                         <div className="font-mono text-[10px] text-zinc-600">@{ch.username}</div>
                       )}
                     </div>
-                    {/* Members */}
                     {ch.members && (
                       <div className="flex items-center gap-1 shrink-0 font-mono text-[10px] text-zinc-600">
                         <Users size={9} />
                         {ch.members.toLocaleString()}
                       </div>
                     )}
-                    {/* Checkmark */}
                     {isSelected && <CheckCircle2 size={14} className="shrink-0 text-emerald-400" />}
                   </button>
                 );
               })
             )}
           </div>
-
           <div className="flex items-center justify-between">
             <span className="font-mono text-[11px] text-zinc-600">
               {filtered.length} channels · {selectedIds.length} selected
@@ -243,7 +233,7 @@ export default function SettingsPage() {
 
   const [bybitApiKey, setBybitApiKey] = useState("");
   const [bybitSecret, setBybitSecret] = useState("");
-  const [openaiKey, setOpenaiKey] = useState("");
+  const [geminiKey, setGeminiKey] = useState("");
   const [riskUsdt, setRiskUsdt] = useState("10");
   const [leverage, setLeverage] = useState("10");
   const [selectedChannelIds, setSelectedChannelIds] = useState<number[]>([]);
@@ -274,7 +264,7 @@ export default function SettingsPage() {
     const payload: ConfigUpdatePayload = {};
     if (bybitApiKey.trim()) payload.bybit_api_key = bybitApiKey.trim();
     if (bybitSecret.trim()) payload.bybit_api_secret = bybitSecret.trim();
-    if (openaiKey.trim()) payload.openai_api_key = openaiKey.trim();
+    if (geminiKey.trim()) payload.gemini_api_key = geminiKey.trim();
     const parsedRisk = parseFloat(riskUsdt);
     if (!isNaN(parsedRisk) && parsedRisk > 0) payload.risk_usdt = parsedRisk;
     const parsedLev = parseInt(leverage);
@@ -288,7 +278,7 @@ export default function SettingsPage() {
         setSaveResult({ ok: true, message: "Configuration saved successfully." });
         setConfig(result.config);
         setBybitSecret("");
-        setOpenaiKey("");
+        setGeminiKey("");
       } else {
         setSaveResult({ ok: false, message: "Save failed" });
       }
@@ -363,8 +353,15 @@ export default function SettingsPage() {
               </div>
             </SectionCard>
 
-            <SectionCard title="OPENAI INTEGRATION" description="GPT-4o Mini parses unstructured Telegram signals into structured JSON." accent="indigo">
-              <SecretField label="OpenAI API Key" placeholder="sk-..." value={openaiKey} onChange={setOpenaiKey} isSet={config?.openai_api_key_set} hint="Requires gpt-4o-mini access. Encrypted at rest." />
+            <SectionCard title="GEMINI AI INTEGRATION" description="Google Gemini Flash parses Telegram signals into structured trade orders. Free tier: 1,500 requests/day." accent="indigo">
+              <SecretField
+                label="Gemini API Key"
+                placeholder="AIza..."
+                value={geminiKey}
+                onChange={setGeminiKey}
+                isSet={config?.gemini_api_key_set}
+                hint="Get your free key at aistudio.google.com — no credit card required."
+              />
             </SectionCard>
 
             <SectionCard title="TELEGRAM CHANNELS" description="Select which channels to monitor for trading signals." accent="violet">
